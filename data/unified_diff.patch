@@ -1,0 +1,145 @@
+diff -rupN original/BatteryStatusBar.qml new/BatteryStatusBar.qml
+--- a/usr/share/lipstick-jolla-home-qt5/lockscreen/BatteryStatusBar.qml	1970-01-01 01:00:00.000000000 +0100
++++ b/usr/share/lipstick-jolla-home-qt5/lockscreen/BatteryStatusBar.qml	2015-01-28 17:24:35.273879414 +0100
+@@ -0,0 +1,122 @@
++/****************************************************************************
++**
++** Created by Billy Halley
++** Contact: <ziobilly94@gmail.com>
++**
++****************************************************************************/
++
++import QtQuick 2.0
++import org.freedesktop.contextkit 1.0
++import Sailfish.Silica 1.0
++import Sailfish.Silica.theme 1.0
++import Sailfish.Silica.private 1.0
++
++Item {
++    id: batteryStatusBar
++    ContextProperty {
++        id: batteryChargePercentageContextProperty
++        key: "Battery.ChargePercentage"
++        onValueChanged: batteryStatusBar.setPulse()
++    }
++
++    ContextProperty {
++        id: batteryIsChargingContextProperty
++        key: "Battery.IsCharging"
++        onValueChanged: batteryStatusBar.setPulse()
++    }
++
++    ContextProperty {
++        id: systemPowerSaveModeContextProperty
++        key: "System.PowerSaveMode"
++        onValueChanged: batteryStatusBar.setPulse()
++    }
++
++        Item{
++            id: statusBar
++            x: Theme.paddingLarge*2
++            width: Screen.width - x*2
++            property real value: batteryChargePercentageContextProperty.value
++            property real value_p: value/100
++            property bool charging
++            property string text: value
++
++            GlassItem {
++                id: background
++                width: statusBar.width
++                height: Theme.paddingLarge
++                dimmed: true
++                radius: 0.05
++                falloffRadius: 0.1
++                ratio: 0.0
++                color: lockScreen.textColor
++            }
++
++            GlassItem {
++                id: highlight
++                width: background.width*statusBar.value_p
++                height: Theme.paddingLarge
++                dimmed: false
++                radius: 0.05
++                falloffRadius: 0.1
++                ratio: 0.0
++                color: lockScreen.textColor
++
++                Timer {
++                    id: statusBarTimer
++                    running: statusBar.charging
++                    repeat: true
++                    interval: 64
++                    property real counter: 0
++                    property bool cycle: true
++                    onTriggered: {
++                        if (running) {
++                            if( cycle ) {
++                                highlight.falloffRadius += 0.01
++                                ++counter
++                                if (counter == 15) {
++                                    cycle = !cycle
++                                    counter = 0
++                                }
++                                restart()
++                            } else {
++                                highlight.falloffRadius -= 0.01
++                                ++counter
++                                if (counter == 15) {
++                                    cycle = !cycle
++                                    counter = 0
++                                }
++                                restart()
++                            }
++                        }
++                    }
++                }
++
++            }
++
++            Text {
++                id: labelText
++                visible: text.length
++                font.pixelSize: Theme.fontSizeSmall
++                font.family: Theme.fontFamily
++                color: lockScreen.textColor
++                anchors.horizontalCenter: statusBar.horizontalCenter
++                anchors.bottom: statusBar.top
++                text: statusBar.text
++            }
++
++        }
++
++
++
++    function setPulse() {
++        if (batteryIsChargingContextProperty.value) {
++                statusBar.charging = true
++        } else {
++                statusBar.charging = false
++                highlight.falloffRadius = 0.1
++                statusBarTimer.counter = 0
++                statusBarTimer.cycle = true
++                }
++    }
++
++}
+diff -rupN original/Lockscreen.qml new/Lockscreen.qml
+--- a/usr/share/lipstick-jolla-home-qt5/lockscreen/Lockscreen.qml	2015-01-28 17:24:35.193879411 +0100
++++ b/usr/share/lipstick-jolla-home-qt5/lockscreen/Lockscreen.qml	2015-01-28 17:24:35.233879412 +0100
+@@ -90,6 +90,15 @@ MouseArea {
+     }
+ 
+ 
++    BatteryStatusBar {
++        id: batteryStatusBar
++        anchors {
++            bottom: clock.top
++	    bottomMargin: Theme.paddingLarge
++        }
++    }
++
++
+     Clock {
+         id: clock
+         anchors {
