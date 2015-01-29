@@ -1,6 +1,6 @@
 diff -rupN original/BatteryStatusBar.qml new/BatteryStatusBar.qml
---- original/BatteryStatusBar.qml	1970-01-01 01:00:00.000000000 +0100
-+++ new/BatteryStatusBar.qml	2015-01-29 18:27:08.541566648 +0100
+--- a/usr/share/lipstick-jolla-home-qt5/lockscreen/BatteryStatusBar.qml	1970-01-01 01:00:00.000000000 +0100
++++ b/usr/share/lipstick-jolla-home-qt5/lockscreen/BatteryStatusBar.qml	2015-01-29 18:27:08.541566648 +0100
 @@ -0,0 +1,122 @@
 +/****************************************************************************
 +**
@@ -125,16 +125,17 @@ diff -rupN original/BatteryStatusBar.qml new/BatteryStatusBar.qml
 +
 +}
 diff -rupN original/Lockscreen.qml new/Lockscreen.qml
---- original/Lockscreen.qml	2015-01-28 17:24:35.193879411 +0100
-+++ new/Lockscreen.qml	2015-01-29 18:26:45.289565904 +0100
-@@ -90,6 +90,15 @@ MouseArea {
+--- a/usr/share/lipstick-jolla-home-qt5/lockscreen/Lockscreen.qml	2015-01-29 19:39:27.329705490 +0100
++++ b/usr/share/lipstick-jolla-home-qt5/lockscreen/Lockscreen.qml	2015-01-29 20:39:37.301821009 +0100
+@@ -89,6 +89,16 @@ MouseArea {
+         }
      }
  
- 
++
 +    BatteryStatusBar {
 +        id: batteryStatusBar
 +        anchors {
-+            bottom: bottom: ongoingCall.enabled ? ongoingCall.top : clock.top
++            bottom: ongoingCall.enabled ? ongoingCall.top : clock.top
 +	    bottomMargin: Theme.paddingLarge
 +        }
 +    }
@@ -143,7 +144,7 @@ diff -rupN original/Lockscreen.qml new/Lockscreen.qml
      Clock {
          id: clock
          anchors {
-@@ -250,6 +259,7 @@ MouseArea {
+@@ -249,6 +259,7 @@ MouseArea {
      }
  
      OngoingCall {
