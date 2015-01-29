@@ -1,10 +1,10 @@
 diff -rupN original/BatteryStatusBar.qml new/BatteryStatusBar.qml
---- a/usr/share/lipstick-jolla-home-qt5/lockscreen/BatteryStatusBar.qml	1970-01-01 01:00:00.000000000 +0100
-+++ b/usr/share/lipstick-jolla-home-qt5/lockscreen/BatteryStatusBar.qml	2015-01-28 17:24:35.273879414 +0100
+--- original/BatteryStatusBar.qml	1970-01-01 01:00:00.000000000 +0100
++++ new/BatteryStatusBar.qml	2015-01-29 18:27:08.541566648 +0100
 @@ -0,0 +1,122 @@
 +/****************************************************************************
 +**
-+** Created by Billy Halley
++** Created by Antonio Mancini
 +** Contact: <ziobilly94@gmail.com>
 +**
 +****************************************************************************/
@@ -37,7 +37,133 @@ diff -rupN original/BatteryStatusBar.qml new/BatteryStatusBar.qml
 +
 +        Item{
 +            id: statusBar
-+            x: Theme.paddingLarge*2
++            x: Theme.paddingLarge*2 
++            width: Screen.width - x*2
++            property real value: batteryChargePercentageContextProperty.value
++            property real value_p: value/100
++            property bool charging
++            property string text: value
++
++            GlassItem {
++                id: background
++                width: statusBar.width
++                height: Theme.paddingLarge
++                dimmed: true
++                radius: 0.05
++                falloffRadius: 0.1
++                ratio: 0.0
++                color: lockScreen.textColor
++            }
++
++            GlassItem {
++                id: highlight
++                width: background.width*statusBar.value_p
++                height: Theme.paddingLarge
++                dimmed: false
++                radius: 0.05
++                falloffRadius: 0.1
++                ratio: 0.0
++                color: lockScreen.textColor
++
++                Timer {
++                    id: statusBarTimer
++                    running: statusBar.charging
++                    repeat: true
++                    interval: 64
++                    property real counter: 0
++                    property bool cycle: true
++                    onTriggered: {
++                        if (running) {
++                            if( cycle ) {
++                                highlight.falloffRadius += 0.01
++                                ++counter
++                                if (counter == 15) {
++                                    cycle = !cycle
++                                    counter = 0
++                                }
++                                restart()
++                            } else {
++                                highlight.falloffRadius -= 0.01
++                                ++counter
++                                if (counter == 15) {
++                                    cycle = !cycle
++                                    counter = 0
++                                }
++                                restart()
++                            }
++                        }
++                    }
++                }
++
++            }
++/*
++            Text {
++                id: labelText
++                visible: text.length
++                font.pixelSize: Theme.fontSizeSmall
++                font.family: Theme.fontFamily
++                color: lockScreen.textColor
++                anchors.horizontalCenter: statusBar.horizontalCenter
++                anchors.bottom: statusBar.top
++                text: statusBar.text
++            }
++*/
++        }
++
++
++
++    function setPulse() {
++        if (batteryIsChargingContextProperty.value) {
++                statusBar.charging = true
++        } else {
++                statusBar.charging = false
++                highlight.falloffRadius = 0.1
++                statusBarTimer.counter = 0
++                statusBarTimer.cycle = true
++                }
++    }
++
++}
+diff -rupN original/BatteryStatusBar.qml~ new/BatteryStatusBar.qml~
+--- original/BatteryStatusBar.qml~	1970-01-01 01:00:00.000000000 +0100
++++ new/BatteryStatusBar.qml~	2015-01-28 17:24:35.273879414 +0100
+@@ -0,0 +1,122 @@
++/****************************************************************************
++**
++** Created by Antonio Mancini
++** Contact: <ziobilly94@gmail.com>
++**
++****************************************************************************/
++
++import QtQuick 2.0
++import org.freedesktop.contextkit 1.0
++import Sailfish.Silica 1.0
++import Sailfish.Silica.theme 1.0
++import Sailfish.Silica.private 1.0
++
++Item {
++    id: batteryStatusBar
++    ContextProperty {
++        id: batteryChargePercentageContextProperty
++        key: "Battery.ChargePercentage"
++        onValueChanged: batteryStatusBar.setPulse()
++    }
++
++    ContextProperty {
++        id: batteryIsChargingContextProperty
++        key: "Battery.IsCharging"
++        onValueChanged: batteryStatusBar.setPulse()
++    }
++
++    ContextProperty {
++        id: systemPowerSaveModeContextProperty
++        key: "System.PowerSaveMode"
++        onValueChanged: batteryStatusBar.setPulse()
++    }
++
++        Item{
++            id: statusBar
++            x: Theme.paddingLarge*2 
 +            width: Screen.width - x*2
 +            property real value: batteryChargePercentageContextProperty.value
 +            property real value_p: value/100
@@ -125,12 +251,128 @@ diff -rupN original/BatteryStatusBar.qml new/BatteryStatusBar.qml
 +
 +}
 diff -rupN original/Lockscreen.qml new/Lockscreen.qml
---- a/usr/share/lipstick-jolla-home-qt5/lockscreen/Lockscreen.qml	2015-01-28 17:24:35.193879411 +0100
-+++ b/usr/share/lipstick-jolla-home-qt5/lockscreen/Lockscreen.qml	2015-01-28 17:24:35.233879412 +0100
+--- original/Lockscreen.qml	2015-01-28 17:24:35.193879411 +0100
++++ new/Lockscreen.qml	2015-01-29 18:26:45.289565904 +0100
 @@ -90,6 +90,15 @@ MouseArea {
      }
  
  
++    BatteryStatusBar {
++        id: batteryStatusBar
++        anchors {
++            bottom: bottom: ongoingCall.enabled ? ongoingCall.top : clock.top
++	    bottomMargin: Theme.paddingLarge
++        }
++    }
++
++
+     Clock {
+         id: clock
+         anchors {
+@@ -250,6 +259,7 @@ MouseArea {
+     }
+ 
+     OngoingCall {
++        id: ongoingCall
+         anchors.bottom: clock.top
+     }
+ 
+diff -rupN original/Lockscreen.qml~ new/Lockscreen.qml~
+--- original/Lockscreen.qml~	1970-01-01 01:00:00.000000000 +0100
++++ new/Lockscreen.qml~	2015-01-28 17:24:35.233879412 +0100
+@@ -0,0 +1,346 @@
++/****************************************************************************
++**
++** Copyright (C) 2013 Jolla Ltd.
++** Contact: Vesa Halttunen <vesa.halttunen@jollamobile.com>
++**
++****************************************************************************/
++
++import QtQuick 2.0
++import org.nemomobile.lipstick 0.1
++import Sailfish.Silica 1.0
++import com.jolla.lipstick 0.1
++import org.nemomobile.time 1.0
++import "../notifications"
++import "../scripts/desktop.js" as Desktop
++
++MouseArea {
++    id: lockScreen
++    property alias clockHeight: clock.height
++    property bool fullyOnDisplay: dashboard.contentY == 0 && Lipstick.compositor.homeVisible
++    property bool onDisplay: dashboard.contentY < dashboard.lockscreenAndStatusAreaHeight && Lipstick.compositor.homeVisible
++    property bool recentlyOnDisplay
++
++    // Allows start-up wizard to not become backgrounded when the display turns off/on
++    property int forceTopWindowProcessId: -1
++
++    // Use a binding rather than a Connections element to shortcut spurious change signals.
++    property bool lockscreenVisible: lipstickSettings.lockscreenVisible
++
++    // Suffix that should be added to all theme icons that are shown in low power mode
++    property string iconSuffix: lipstickSettings.lowPowerMode ? ('?' + Theme.highlightColor) : ''
++
++    // Text color of items that are shown in low power mode
++    property color textColor: lipstickSettings.lowPowerMode ? Theme.highlightColor : Theme.primaryColor
++
++    property Item accessNotificationsHint
++
++    onOnDisplayChanged: {
++        if (onDisplay) {
++            if (desktop.animating) {
++                onTimer.start()
++            } else {
++                recentlyOnDisplay = onDisplay
++            }
++
++            lockScreen.state = "showDateImmediatelyWithoutTimer"
++        }
++    }
++
++    Timer {
++        id: onTimer
++        interval: 200
++        onTriggered: lockScreen.recentlyOnDisplay = lockScreen.onDisplay
++    }
++    Timer {
++        interval: 3000
++        running: !lockScreen.onDisplay
++        onTriggered: lockScreen.recentlyOnDisplay = lockScreen.onDisplay
++    }
++    Timer {
++        id: offTimer
++        interval: 50
++        running: false
++        onTriggered: {
++            if (forceTopWindowProcessId < 0
++                    || Lipstick.compositor.topmostWindow == null
++                    || Lipstick.compositor.topmostWindow == forceTopWindowProcessId) {
++                dashboard.snapToPage(0, true);
++                Lipstick.compositor.setCurrentWindow(null);
++                desktop.closeApplicationEnabled = false
++                desktop.removeApplicationEnabled = false
++            }
++        }
++    }
++
++    onLockscreenVisibleChanged: {
++        if (!lockscreenVisible) {
++            if (dashboard.currentIndex === 0) {
++                if (Desktop.instance.ambienceOnLockscreen) {
++                    Desktop.instance.ambienceOnLockscreen = false
++                } else {
++                    // lockscreen visible, but we don't want to see it.
++                    // reset view to switcher/launcher
++                    dashboard.snapToPage(1);
++                }
++            }
++        } else {
++            // lockscreen enabled. make sure we're already there.
++            offTimer.restart()
++        }
++    }
++
++
 +    BatteryStatusBar {
 +        id: batteryStatusBar
 +        anchors {
@@ -140,6 +382,248 @@ diff -rupN original/Lockscreen.qml new/Lockscreen.qml
 +    }
 +
 +
-     Clock {
-         id: clock
-         anchors {
++    Clock {
++        id: clock
++        anchors {
++            bottom: parent.bottom
++            horizontalCenter: parent.horizontalCenter
++        }
++    }
++
++    ConnectionStatusIndicator {
++        anchors {
++            bottom: clock.verticalCenter
++            bottomMargin: Math.round(Theme.paddingSmall/2)
++            left: parent.left
++            leftMargin: Theme.smallIcons ? Theme.paddingSmall : Theme.paddingLarge
++        }
++    }
++
++    Image {
++        anchors {
++            top: parent.top
++            left: parent.left
++            right: parent.right
++        }
++        source: "image://theme/graphic-wallpaper-dimmer"
++    }
++
++    Item {
++        id: networkNameAndDateLabels
++        anchors {
++            top: parent.top
++            topMargin: Theme.paddingLarge
++        }
++        width: parent.width
++        height: Math.max(cellularNetworkNameStatusIndicator.height, dateLabel.height)
++
++        CellularNetworkNameStatusIndicator {
++            id: cellularNetworkNameStatusIndicator
++            anchors.horizontalCenter: parent.horizontalCenter
++            opacity: 1 - dateLabel.opacity
++        }
++
++        Label {
++            id: dateLabel
++            anchors.horizontalCenter: parent.horizontalCenter
++            width: parent.width - (Screen.width / 5 * 2)
++            text: {
++                var dateString = Format.formatDate(wallClock.time, Format.DateFull)
++                return dateString.charAt(0).toUpperCase() + dateString.substr(1)
++            }
++            color: Theme.highlightColor
++            horizontalAlignment: Text.AlignHCenter
++            maximumLineCount: 2
++            wrapMode: Text.WordWrap
++            WallClock {
++                id: wallClock
++                enabled: lockScreen.onDisplay
++                updateFrequency: WallClock.Day
++            }
++            Behavior on opacity {
++                id: dateOpacityBehavior
++                FadeAnimation { }
++            }
++        }
++    }
++
++    SimToolkitIdleModeIndicator {
++        anchors {
++            top: networkNameAndDateLabels.bottom
++            topMargin: Theme.paddingMedium
++            horizontalCenter: parent.horizontalCenter
++        }
++        width: parent.width - 2*(Theme.iconSizeLarge + Theme.paddingLarge)
++    }
++
++    ProfileStatusIndicator {
++        id: profileStatusIndicator
++        anchors {
++            bottom: clock.verticalCenter
++            bottomMargin: Math.round(Theme.paddingSmall/2)
++            right: parent.right
++            rightMargin: Theme.paddingLarge
++        }
++    }
++
++    AlarmStatusIndicator {
++        anchors {
++            top: clock.verticalCenter
++            topMargin: Math.round(Theme.paddingSmall/2)
++            right: parent.right
++            rightMargin: Theme.paddingLarge
++        }
++    }
++
++    BluetoothStatusIndicator {
++        anchors {
++            top: clock.verticalCenter
++            topMargin: Math.round(Theme.paddingSmall/2)
++            left: parent.left
++            leftMargin: Theme.paddingLarge
++        }
++    }
++
++    JollaNotificationListModel {
++        id: horizontalNotificationListModel
++        categoryFilter: "(x-nemo.system-update)"
++    }
++
++    JollaNotificationListModel {
++        id: verticalNotificationListModel
++        categoryFilter: "^((?!(x-nemo.system-update)).*)$"
++        minimumPriority: 100
++    }
++
++    Column {
++        width: parent.width
++        y: Theme.paddingLarge
++
++        HorizontalNotificationList {
++            id: horizontalNotificationList
++            model: horizontalNotificationListModel
++            width: parent.width
++            iconOnly: true
++            onClicked: showAccessNotificationsHint()
++        }
++        NotificationLockScreenView {
++            id: verticalNotificationList
++            width: parent.width
++            model: verticalNotificationListModel
++            notificationLimit: 4
++            height: Math.min(verticalNotificationListModel.itemCount * notificationHeight,
++                             notificationLimit * notificationHeight)
++            iconSuffix: lockScreen.iconSuffix
++            textColor: lockScreen.textColor
++            onClicked: showAccessNotificationsHint()
++        }
++        Image {
++            x: Theme.paddingLarge
++            source: "image://theme/icon-lock-more" + lockScreen.iconSuffix
++            /* Hide the more notifications icon when there aren't too many notifications */
++            opacity: verticalNotificationListModel.itemCount <= verticalNotificationList.notificationLimit ? 0 : 1
++            Behavior on opacity { FadeAnimation {} }
++            visible: opacity > 0.0
++        }
++    }
++
++    function showAccessNotificationsHint() {
++        if (!accessNotificationsHint) {
++            var component = Qt.createComponent(Qt.resolvedUrl("AccessNotificationsHint.qml"))
++            if (component.status == Component.Ready) {
++                accessNotificationsHint = component.createObject(desktop)
++                accessNotificationsHint.finished.connect(function() {
++                    lockScreen.accessNotificationsHint = null
++                })
++            } else {
++                console.warn("AccessNotificationsHint.qml instantiation failed " + component.errorString())
++            }
++        }
++    }
++
++    OngoingCall {
++        anchors.bottom: clock.top
++    }
++
++    SneakPeekHint {
++        id: sneakPeekHint
++    }
++
++    Connections {
++        target: Lipstick.compositor
++        onDisplayOff: {
++            if (lockscreenVisible && onDisplay && dashboard.contentY > 0) {
++                dashboard.cancelFlick()
++                dashboard.snapToPage(0, true)
++            }
++        }
++
++        onDisplayAboutToBeOn: {
++            lockScreen.state = "showDateImmediately"
++            sneakPeekHint.sneakPeekActive = lipstickSettings.lowPowerMode
++        }
++        onDisplayAboutToBeOff: sneakPeekHint.sneakPeekActive = false
++    }
++
++    Connections {
++        target: lipstickSettings
++        onLowPowerModeChanged: if (!lipstickSettings.lowPowerMode) sneakPeekHint.sneakPeekActive = false
++    }
++
++    onFullyOnDisplayChanged: {
++        if (fullyOnDisplay && !hideDateTimer.running) {
++            lockScreen.state = "showDate"
++        }
++    }
++
++    Timer {
++        id: hideDateTimer
++        interval: 3000
++        onTriggered: {
++            var indicator = cellularNetworkNameStatusIndicator
++            if (!lipstickSettings.lowPowerMode && (indicator.homeNetwork || indicator.visitorNetwork)) {
++                lockScreen.state = "showCellularNetworkName"
++            }
++        }
++    }
++
++    states: [
++        State {
++            name: "showDateImmediatelyWithoutTimer"
++            StateChangeScript {
++                script: {
++                    dateOpacityBehavior.enabled = false
++                    dateLabel.opacity = 1
++                    dateOpacityBehavior.enabled = true
++                }
++            }
++        },
++        State {
++            name: "showDateImmediately"
++            StateChangeScript {
++                script: {
++                    dateOpacityBehavior.enabled = false
++                    dateLabel.opacity = 1
++                    dateOpacityBehavior.enabled = true
++                    hideDateTimer.start()
++                }
++            }
++        },
++        State {
++            name: "showDate"
++            StateChangeScript {
++                script: {
++                    dateLabel.opacity = 1
++                    hideDateTimer.start()
++                }
++            }
++        },
++        State {
++            name: "showCellularNetworkName"
++            PropertyChanges {
++                target: dateLabel
++                opacity: 0
++            }
++        }
++    ]
++}
