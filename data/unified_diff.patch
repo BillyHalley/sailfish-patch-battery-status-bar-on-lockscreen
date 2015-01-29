@@ -96,7 +96,7 @@ diff -rupN original/BatteryStatusBar.qml new/BatteryStatusBar.qml
 +                }
 +
 +            }
-+
++/*
 +            Text {
 +                id: labelText
 +                visible: text.length
@@ -107,7 +107,7 @@ diff -rupN original/BatteryStatusBar.qml new/BatteryStatusBar.qml
 +                anchors.bottom: statusBar.top
 +                text: statusBar.text
 +            }
-+
++*/
 +        }
 +
 +
