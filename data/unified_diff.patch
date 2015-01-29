@@ -134,7 +134,7 @@ diff -rupN original/Lockscreen.qml new/Lockscreen.qml
 +    BatteryStatusBar {
 +        id: batteryStatusBar
 +        anchors {
-+            bottom: ongoingCall.enabled ? ongoingCall.top
++            bottom: ongoingCall.enabled ? ongoingCall.top : clock.top
 +	        bottomMargin: Theme.paddingLarge
 +        }
 +    }
