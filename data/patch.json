@@ -1,7 +1,7 @@
 {
     "name": "Battery StatusBar on Lockscreen",
     "description": "Displays a StatusBar showing battery percentage on the Lockscreen",
-    "category": "lockscreen",
+    "category": "homescreen",
 	"infos": {
         "maintainer": "BillyHalley"
 	}
