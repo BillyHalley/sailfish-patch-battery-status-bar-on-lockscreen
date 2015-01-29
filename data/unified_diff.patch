@@ -37,7 +37,7 @@ diff -rupN original/BatteryStatusBar.qml new/BatteryStatusBar.qml
 +
 +        Item{
 +            id: statusBar
-+            x: Theme.paddingLarge*2 
++            x: Theme.paddingLarge*2
 +            width: Screen.width - x*2
 +            property real value: batteryChargePercentageContextProperty.value
 +            property real value_p: value/100

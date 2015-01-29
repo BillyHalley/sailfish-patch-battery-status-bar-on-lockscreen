@@ -14,7 +14,7 @@ TARGET = battery-status-bar-on-lockscreen
 
 TEMPLATE = aux
 
-patch.path = /usr/share/patchmanager/patches/ziobilly-battery-status-bar-on-lockscreen
+patch.path = /usr/share/patchmanager/patches/b-halley-battery-status-bar-on-lockscreen
 patch.files = data/unified_diff.patch data/patch.json
 
 INSTALLS += \

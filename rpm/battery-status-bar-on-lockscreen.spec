@@ -18,7 +18,7 @@ Release:    1
 Group:      Applications/Productivity
 License:    GPLv2+
 BuildArch:  noarch
-URL:        https://openrepos.net/users/ziobilly
+URL:        https://openrepos.net/users/billyhalley
 Source0:    %{name}-%{version}.tar.bz2
 Source100:  battery-status-bar-on-lockscreen.yaml
 Requires:   patchmanager
