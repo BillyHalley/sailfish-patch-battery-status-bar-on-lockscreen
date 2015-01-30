@@ -24,6 +24,6 @@ INSTALLS += \
 OTHER_FILES += \
     data/patch.json \
     data/unified_diff.patch \
-    rpm/battery-status-bar-on-lockscreen.in \
     rpm/battery-status-bar-on-lockscreen.spec \
-    rpm/battery-status-bar-on-lockscreen.yaml
+    rpm/battery-status-bar-on-lockscreen.yaml \
+    rpm/battery-status-bar-on-lockscreen.in

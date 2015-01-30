@@ -8,7 +8,11 @@
 # * date Author's Name <author's email> version-release
 # - Summary of changes
 
-* Wed Jan 28 2015 Billy Halley <ziobilly94@gmail.com> 0.1-2
+%changelog
+* Wed Jan 28 2015 Billy Halley <ziobilly94@gmail.com> 0.1-1
+-Initial release
+
+* Feb Jan 30 2015 Billy Halley <ziobilly94@gmail.com> 0.1-2
 -Fixed compatibility issue with other patches
 
 
