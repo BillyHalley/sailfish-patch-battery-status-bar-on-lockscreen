@@ -14,7 +14,7 @@ Name:       battery-status-bar-on-lockscreen
 %{?qtc_builddir:%define _builddir %qtc_builddir}
 Summary:    Battery StatusBar on Lockscreen
 Version:    0.1
-Release:    2
+Release:    3
 Group:      Applications/Productivity
 License:    GPLv2+
 BuildArch:  noarch

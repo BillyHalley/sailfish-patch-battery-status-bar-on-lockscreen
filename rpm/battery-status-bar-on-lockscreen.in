@@ -15,4 +15,5 @@
 * Feb Jan 30 2015 Billy Halley <ziobilly94@gmail.com> 0.1-2
 -Fixed compatibility issue with other patches
 
-
+* Feb Jan 30 2015 Billy Halley <ziobilly94@gmail.com> 0.1-3
+-Removed old piece of code
