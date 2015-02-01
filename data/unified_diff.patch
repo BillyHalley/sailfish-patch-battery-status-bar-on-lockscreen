@@ -1,6 +1,6 @@
 diff -rupN original/BatteryStatusBar.qml new/BatteryStatusBar.qml
 --- a/usr/share/lipstick-jolla-home-qt5/lockscreen/BatteryStatusBar.qml	1970-01-01 01:00:00.000000000 +0100
-+++ b/usr/share/lipstick-jolla-home-qt5/lockscreen/BatteryStatusBar.qml	2015-01-31 19:02:55.095256404 +0100
++++ b/usr/share/lipstick-jolla-home-qt5/lockscreen/BatteryStatusBar.qml	2015-02-01 13:04:28.917283540 +0100
 @@ -0,0 +1,105 @@
 +/****************************************************************************
 +**
@@ -35,81 +35,81 @@ diff -rupN original/BatteryStatusBar.qml new/BatteryStatusBar.qml
 +        onValueChanged: batteryStatusBar.setPulse()
 +    }
 +
-+        Item{
-+            id: statusBar
-+            x: Theme.paddingLarge*2
-+            width: Screen.width - x*2
-+            property real value: batteryChargePercentageContextProperty.value
-+            property real value_p: value/100
-+            property bool charging
++    Item{
++        id: statusBar
++        x: Theme.paddingLarge*2
++        width: Screen.width - x*2
++        property real value: batteryChargePercentageContextProperty.value
++        property real value_p: value/100
++        property bool charging
 +
-+            GlassItem {
-+                id: background
-+                width: statusBar.width
-+                height: Theme.paddingLarge
-+                dimmed: true
-+                radius: 0.05
-+                falloffRadius: 0.1
-+                ratio: 0.0
-+                color: lockScreen.textColor
-+            }
++        GlassItem {
++            id: background
++            width: statusBar.width
++            height: Theme.paddingLarge
++            dimmed: true
++            radius: 0.05
++            falloffRadius: 0.1
++            ratio: 0.0
++            color: lockScreen.textColor
++        }
 +
-+            GlassItem {
-+                id: highlight
-+                width: background.width*statusBar.value_p
-+                height: Theme.paddingLarge
-+                dimmed: false
-+                radius: 0.05
-+                falloffRadius: 0.1
-+                ratio: 0.0
-+                color: lockScreen.textColor
++        GlassItem {
++            id: highlight
++            width: background.width*statusBar.value_p
++            height: Theme.paddingLarge
++            dimmed: false
++            radius: 0.05
++            falloffRadius: 0.1
++            ratio: 0.0
++            color: lockScreen.textColor
 +
-+                Timer {
-+                    id: statusBarTimer
-+                    running: statusBar.charging
-+                    repeat: true
-+                    interval: 64
-+                    property real counter: 0
-+                    property bool cycle: true
-+                    onTriggered: {
-+                        if (running) {
-+                            if( cycle ) {
-+                                highlight.falloffRadius += 0.01
-+                                ++counter
-+                                if (counter == 15) {
-+                                    cycle = !cycle
-+                                    counter = 0
-+                                }
-+                                restart()
-+                            } else {
-+                                highlight.falloffRadius -= 0.01
-+                                ++counter
-+                                if (counter == 15) {
-+                                    cycle = !cycle
-+                                    counter = 0
-+                                }
-+                                restart()
++            Timer {
++                id: statusBarTimer
++                running: statusBar.charging
++                repeat: true
++                interval: 64
++                property real counter: 0
++                property bool cycle: true
++                onTriggered: {
++                    if (running) {
++                        if( cycle ) {
++                            highlight.falloffRadius += 0.01
++                            ++counter
++                            if (counter == 15) {
++                                cycle = !cycle
++                                counter = 0
 +                            }
++                            restart()
++                        } else {
++                            highlight.falloffRadius -= 0.01
++                            ++counter
++                            if (counter == 15) {
++                                cycle = !cycle
++                                counter = 0
++                            }
++                            restart()
 +                        }
 +                    }
 +                }
 +            }
++        }
++    }
 +
 +    function setPulse() {
 +        if (batteryIsChargingContextProperty.value) {
-+                statusBar.charging = true
++            statusBar.charging = true
 +        } else {
-+                statusBar.charging = false
-+                highlight.falloffRadius = 0.1
-+                statusBarTimer.counter = 0
-+                statusBarTimer.cycle = true
-+                }
++            statusBar.charging = false
++            highlight.falloffRadius = 0.1
++            statusBarTimer.counter = 0
++            statusBarTimer.cycle = true
++        }
 +    }
-+  }
 +}
 diff -rupN original/Lockscreen.qml new/Lockscreen.qml
 --- a/usr/share/lipstick-jolla-home-qt5/lockscreen/Lockscreen.qml	2015-01-31 19:00:36.607251972 +0100
-+++ b/usr/share/lipstick-jolla-home-qt5/lockscreen/Lockscreen.qml	2015-01-31 19:01:09.847253036 +0100
++++ b/usr/share/lipstick-jolla-home-qt5/lockscreen/Lockscreen.qml	2015-02-01 13:04:57.509284455 +0100
 @@ -89,6 +89,17 @@ MouseArea {
          }
      }
