@@ -1,7 +1,7 @@
 diff -rupN original/BatteryStatusBar.qml new/BatteryStatusBar.qml
 --- a/usr/share/lipstick-jolla-home-qt5/lockscreen/BatteryStatusBar.qml	1970-01-01 01:00:00.000000000 +0100
-+++ b/usr/share/lipstick-jolla-home-qt5/lockscreen/BatteryStatusBar.qml	2015-01-30 15:48:21.945034245 +0100
-@@ -0,0 +1,122 @@
++++ b/usr/share/lipstick-jolla-home-qt5/lockscreen/BatteryStatusBar.qml	2015-01-31 19:02:55.095256404 +0100
+@@ -0,0 +1,105 @@
 +/****************************************************************************
 +**
 +** Created by Antonio Mancini
@@ -42,7 +42,6 @@ diff -rupN original/BatteryStatusBar.qml new/BatteryStatusBar.qml
 +            property real value: batteryChargePercentageContextProperty.value
 +            property real value_p: value/100
 +            property bool charging
-+            property string text: value
 +
 +            GlassItem {
 +                id: background
@@ -94,23 +93,7 @@ diff -rupN original/BatteryStatusBar.qml new/BatteryStatusBar.qml
 +                        }
 +                    }
 +                }
-+
 +            }
-+/*
-+            Text {
-+                id: labelText
-+                visible: text.length
-+                font.pixelSize: Theme.fontSizeSmall
-+                font.family: Theme.fontFamily
-+                color: lockScreen.textColor
-+                anchors.horizontalCenter: statusBar.horizontalCenter
-+                anchors.bottom: statusBar.top
-+                text: statusBar.text
-+            }
-+*/
-+        }
-+
-+
 +
 +    function setPulse() {
 +        if (batteryIsChargingContextProperty.value) {
@@ -122,12 +105,12 @@ diff -rupN original/BatteryStatusBar.qml new/BatteryStatusBar.qml
 +                statusBarTimer.cycle = true
 +                }
 +    }
-+
++  }
 +}
 diff -rupN original/Lockscreen.qml new/Lockscreen.qml
---- a/usr/share/lipstick-jolla-home-qt5/lockscreen/Lockscreen.qml	2015-01-29 19:39:27.329705490 +0100
-+++ b/usr/share/lipstick-jolla-home-qt5/lockscreen/Lockscreen.qml	2015-01-30 15:45:15.017028264 +0100
-@@ -89,6 +89,16 @@ MouseArea {
+--- a/usr/share/lipstick-jolla-home-qt5/lockscreen/Lockscreen.qml	2015-01-31 19:00:36.607251972 +0100
++++ b/usr/share/lipstick-jolla-home-qt5/lockscreen/Lockscreen.qml	2015-01-31 19:01:09.847253036 +0100
+@@ -89,6 +89,17 @@ MouseArea {
          }
      }
  
@@ -135,9 +118,10 @@ diff -rupN original/Lockscreen.qml new/Lockscreen.qml
 +    BatteryStatusBar {
 +        id: batteryStatusBar
 +        anchors {
-+            bottom: clock.top
-+	    bottomMargin: Theme.paddingLarge
++            top: clock.top
++	    topMargin: Theme.paddingMedium
 +        }
++	visible: lipstickSettings.lowPowerMode ? true : false
 +    }
 +
 +

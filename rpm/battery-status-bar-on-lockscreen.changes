@@ -9,11 +9,19 @@
 # - Summary of changes
 
 %changelog
+* Sun Feb 01 2015 Billy Halley <ziobilly94@gmail.com> 0.2-1
+-Set visibility only in low power mode
+-Moved a bit down to avoid overlay with CODeRUS patch
+
+* Fri Jan 30 2015 Billy Halley <ziobilly94@gmail.com> 0.1-3
+-Removed old piece of code
+
+* Fri Jan 30 2015 Billy Halley <ziobilly94@gmail.com> 0.1-2
+-Fixed compatibility issue with other patches
+
 * Wed Jan 28 2015 Billy Halley <ziobilly94@gmail.com> 0.1-1
 -Initial release
 
-* Feb Jan 30 2015 Billy Halley <ziobilly94@gmail.com> 0.1-2
--Fixed compatibility issue with other patches
 
-* Feb Jan 30 2015 Billy Halley <ziobilly94@gmail.com> 0.1-3
--Removed old piece of code
+
+
