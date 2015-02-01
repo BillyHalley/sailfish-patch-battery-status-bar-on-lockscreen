@@ -119,7 +119,7 @@ diff -rupN original/Lockscreen.qml new/Lockscreen.qml
 +        id: batteryStatusBar
 +        anchors {
 +            top: clock.top
-+	    topMargin: Theme.paddingMedium
++	    topMargin: Theme.paddingSmall
 +        }
 +	visible: lipstickSettings.lowPowerMode ? true : false
 +    }
