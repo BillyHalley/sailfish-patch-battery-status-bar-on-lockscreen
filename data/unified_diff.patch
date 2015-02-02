@@ -121,7 +121,7 @@ diff -rupN original/Lockscreen.qml new/Lockscreen.qml
 +            top: clock.top
 +	    topMargin: Theme.paddingSmall
 +        }
-+	visible: lipstickSettings.lowPowerMode ? true : false
++	visible: fullyOnDisplay
 +    }
 +
 +

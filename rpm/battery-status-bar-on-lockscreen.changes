@@ -9,6 +9,9 @@
 # - Summary of changes
 
 %changelog
+* Mon Feb 02 2015 Billy Halley <ziobilly94@gmail.com> 0.2-2
+-Set visibility only when lockscreen is displayed
+
 * Sun Feb 01 2015 Billy Halley <ziobilly94@gmail.com> 0.2-1
 -Set visibility only in low power mode
 -Moved a bit down to avoid overlay with CODeRUS patch
